@@ -105,11 +105,6 @@ const phases = [
   }
 ];
 
-const gallery = [
-  'cris_collect.png','run_sheet_a.png','run_sheet_b.png','walk_sheet.png','cris_idle.png','jump_sheet.png','cris_celebrate.png',
-  'germs.png','puddle.png','trash.png','backpack.png','wetfloor.png','clock.png','bedroom.png','school.png','street.png',
-  'pharmacy_scene.png','collectibles_b.png','pharmacist.png','teacher.png','friend.png','pharmacy.png','collectibles_a.png','star.png'
-];
 
 let st = {
   phase:0, unlocked:0, completed:[], x:120, y:0, vy:0, dir:1, moving:false, lives:3, stars:0, coins:0, score:0,
@@ -293,10 +288,6 @@ $('#restartBtn').onclick=()=>{$('#victoryModal').classList.add('hidden');resetGa
 $('#pauseBtn').onclick=()=>togglePause();$('#resumeBtn').onclick=()=>togglePause(false);
 $('#soundBtn').onclick=toggleSound;$('#panelSoundBtn').onclick=toggleSound;
 $('#helpBtn').onclick=()=>$('#helpModal').classList.remove('hidden');$$('.closeHelp').forEach(b=>b.onclick=()=>$('#helpModal').classList.add('hidden'));
-$('#galleryBtn').onclick=()=>$('#galleryModal').classList.remove('hidden');$$('.closeGallery').forEach(b=>b.onclick=()=>$('#galleryModal').classList.add('hidden'));
-
-const gg=$('#galleryGrid');gallery.forEach(n=>{const f=document.createElement('figure');f.innerHTML=`<img src="${img(n)}" alt="Recurso visual ${n}"><figcaption>${n}</figcaption>`;gg.appendChild(f)});
-
 $('#a11yBtn').onclick=()=>$('#a11yPanel').classList.toggle('hidden');$('#closeA11y').onclick=()=>{$('#a11yPanel').classList.add('hidden');saveProgress()};
 $('#contrastToggle').onchange=e=>{document.body.classList.toggle('high-contrast',e.target.checked);saveProgress()};
 $('#motionToggle').onchange=e=>{document.body.classList.toggle('reduced-motion',e.target.checked);saveProgress()};

@@ -1,4 +1,4 @@
-const CACHE='cris-v4-sharp';
+const CACHE='cris-v5-dark-cover';
 const CORE=['./','./index.html','./style.css','./questions.js','./game.js','./manifest.webmanifest','./icon-192.png','./icon-512.png'];
 self.addEventListener('install',e=>{self.skipWaiting();e.waitUntil(caches.open(CACHE).then(c=>c.addAll(CORE)))});
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(keys=>Promise.all(keys.filter(k=>k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
