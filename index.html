@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+  <meta name="theme-color" content="#7c3aed">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>A Jornada da Cris — Dignidade Menstrual</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <section id="startScreen" class="screen">
+    <div class="start-card">
+      <div class="hero-copy">
+        <span class="eyebrow">JOGO EDUCATIVO · 5 FASES</span>
+        <h1>🌟 A Jornada da Cris</h1>
+        <p class="lead">Caminhe, pule, desvie dos obstáculos, colete prêmios e responda às 18 perguntas sobre dignidade menstrual.</p>
+        <div id="journeyMap" class="journey-map" aria-label="Mapa das cinco fases"></div>
+        <div class="menu">
+          <button id="startBtn" class="primary">▶️ Continuar jornada</button>
+          <button id="newGameBtn" class="secondary">✨ Novo jogo</button>
+          <button id="helpBtn" class="ghost">🎮 Como jogar</button>
+          <button id="galleryBtn" class="ghost">🖼️ Imagens</button>
+        </div>
+        <p class="keyhelp">Teclado: <span class="kbd">←</span> <span class="kbd">→</span> / <span class="kbd">A</span> <span class="kbd">D</span> · pular: <span class="kbd">Espaço</span> · pausa: <span class="kbd">Esc</span>.</p>
+      </div>
+      <img class="hero-cris" src="assets/images/cris_idle_menu_hd.png" width="622" height="1240" decoding="sync" fetchpriority="high" alt="Cris, personagem principal do jogo">
+    </div>
+  </section>
+
+  <section id="game" class="hidden" aria-label="Jogo A Jornada da Cris">
+    <div class="hud">
+      <div class="pill">❤️ <span id="lives">3</span></div>
+      <div class="pill">⭐ <span id="stars">0</span></div>
+      <div class="pill">🪙 <span id="coins">0</span></div>
+      <div class="pill">🧠 <span id="score">0</span></div>
+      <div class="progress-pill" aria-label="Progresso da fase"><div id="phaseProgress"></div></div>
+      <div class="spacer"></div>
+      <button id="pauseBtn" class="iconbtn" aria-label="Pausar jogo">⏸️</button>
+      <button id="soundBtn" class="iconbtn" aria-label="Ativar ou desativar som">🔊</button>
+      <button id="a11yBtn" class="iconbtn" aria-label="Abrir opções de acessibilidade">♿</button>
+      <button id="homeBtn" class="iconbtn" aria-label="Voltar ao menu">🏠</button>
+    </div>
+
+    <div class="phase-title" id="phaseTitle"></div>
+    <aside id="missionCard" class="mission-card" aria-live="polite">
+      <strong id="missionName">Missão</strong>
+      <span id="missionText"></span>
+      <div id="missionChecks" class="mission-checks"></div>
+    </aside>
+
+    <div id="viewport">
+      <div id="world">
+        <div class="ground"></div>
+        <div id="finishGate" class="finish-gate locked" aria-hidden="true"><span>🏁</span><small>MISSÃO</small></div>
+        <div id="player" aria-label="Cris"><img id="playerImg" src="assets/sprites/idle_0.png" alt=""></div>
+      </div>
+    </div>
+
+    <div id="soundCaption" class="sound-caption" aria-live="polite"></div>
+    <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+    <div class="controls" aria-label="Controles na tela">
+      <div class="ctrlset">
+        <button id="leftBtn" class="ctrl" aria-label="Mover para a esquerda">◀</button>
+        <button id="rightBtn" class="ctrl" aria-label="Mover para a direita">▶</button>
+      </div>
+      <button id="jumpBtn" class="ctrl jump" aria-label="Pular">⬆</button>
+    </div>
+  </section>
+
+  <div id="phaseIntroModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="phaseIntroTitle">
+    <div class="modal-card phase-intro-card">
+      <span id="phaseBadge" class="phase-badge">FASE 1</span>
+      <h2 id="phaseIntroTitle"></h2>
+      <p id="phaseIntroStory" class="lead"></p>
+      <div id="phaseIntroMission" class="intro-mission"></div>
+      <button id="phaseIntroStart" class="primary">Começar fase ▶</button>
+    </div>
+  </div>
+
+  <div id="questionModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="qTitle">
+    <div class="modal-card question-card">
+      <span class="question-chip">🧠 DESAFIO DE CONHECIMENTO</span>
+      <h2 id="qTitle">Pergunta</h2>
+      <div id="qText" class="question-text"></div>
+      <div id="qOptions" class="options"></div>
+      <div id="qExplain" class="explain hidden"></div>
+      <div class="modal-actions"><button id="qContinue" class="primary hidden">Continuar</button></div>
+    </div>
+  </div>
+
+  <div id="phaseModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card reward-card">
+      <img class="celebrate-cris" src="assets/images/cris_celebrate.png" alt="Cris comemorando a conclusão da fase">
+      <div>
+        <span class="phase-badge">RECOMPENSA</span>
+        <h2 id="phaseModalTitle">Fase concluída!</h2>
+        <div class="reward-focus"><img id="phaseRewardImg" src="assets/items/star_face.png" alt="Prêmio da fase"><div><strong id="phaseRewardName"></strong><p id="phaseRewardText"></p></div></div>
+        <p id="phaseSummary" class="summary-box"></p>
+        <button id="nextPhaseBtn" class="primary">Próxima fase ▶</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="victoryModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card victory-card">
+      <h2>🏆 Jornada concluída!</h2>
+      <p class="lead">Cris chegou à farmácia reunindo conhecimento, cuidado e autonomia.</p>
+      <img src="assets/images/pharmacy_scene.png" alt="Cris recebendo absorventes na farmácia" class="victory-image">
+      <p id="finalSummary" class="summary-box"></p>
+      <div class="menu"><button id="restartBtn" class="primary">🔄 Jogar novamente</button><button id="victoryHomeBtn" class="ghost">🏠 Menu</button></div>
+    </div>
+  </div>
+
+  <div id="pauseModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card compact-card">
+      <h2>⏸️ Jogo pausado</h2>
+      <p>Seu progresso foi salvo.</p>
+      <button id="resumeBtn" class="primary">▶️ Continuar</button>
+    </div>
+  </div>
+
+  <div id="pickupOverlay" class="pickup-overlay hidden" aria-live="polite">
+    <img src="assets/images/cris_collect.png" alt="Cris coletando um prêmio"><div><b id="pickupTitle">Item coletado!</b><span id="pickupText"></span></div>
+  </div>
+
+  <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2>🎮 Como jogar</h2>
+      <div class="help-list">
+        <p>• Caminhe com as setas ou A/D. No celular ou tablet, use os botões grandes na tela.</p>
+        <p>• Pule com Espaço ou ⬆ para superar poças, mochilas, relógios e germes.</p>
+        <p>• Existem plataformas em diferentes alturas. Algumas estrelas ficam em locais que exigem pulo.</p>
+        <p>• Cada fase tem uma missão: perguntas, estrelas e itens especiais. O portal final só abre quando a missão é concluída.</p>
+        <p>• Germes e alguns obstáculos se movimentam. Se Cris encostar neles, perde um coração e retorna alguns passos.</p>
+        <p>• O menu ♿ oferece alto contraste, texto maior, redução de movimento, legendas sonoras e modo assistido.</p>
+      </div>
+      <button class="primary closeHelp">Entendi</button>
+    </div>
+  </div>
+
+  <div id="galleryModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card">
+      <h2>🖼️ Imagens e sprites do jogo</h2>
+      <p>Todos os materiais visuais enviados foram mantidos no pacote.</p>
+      <div id="galleryGrid" class="gallery-grid"></div>
+      <div class="modal-actions"><button class="primary closeGallery">Fechar</button></div>
+    </div>
+  </div>
+
+  <div id="a11yPanel" class="hidden" role="dialog" aria-label="Opções de acessibilidade">
+    <h3>♿ Acessibilidade</h3>
+    <div class="setting"><label for="contrastToggle">Alto contraste</label><input id="contrastToggle" type="checkbox"></div>
+    <div class="setting"><label for="motionToggle">Reduzir movimento</label><input id="motionToggle" type="checkbox"></div>
+    <div class="setting"><label for="captionToggle">Legendas dos sons</label><input id="captionToggle" type="checkbox" checked></div>
+    <div class="setting"><label for="assistToggle">Modo assistido</label><input id="assistToggle" type="checkbox"></div>
+    <div class="setting"><label for="textRange">Tamanho do texto</label><input id="textRange" class="range" type="range" min="90" max="140" value="100"></div>
+    <div class="setting"><span>Som</span><button id="panelSoundBtn" class="ghost switch">Ligado</button></div>
+    <button id="closeA11y" class="primary panel-close">Fechar</button>
+  </div>
+
+  <script src="questions.js"></script>
+  <script src="game.js"></script>
+</body>
+</html>
