@@ -40,3 +40,15 @@ Não renomeie as pastas `assets`, `assets/items`, `assets/enemies` ou `assets/sp
 
 ## Versão 3 — PNGs em alta definição
 Os sprites e itens desta versão foram refeitos diretamente a partir dos PNGs originais, sem ampliação artificial. Os recortes preservam a resolução nativa; a câmera é alinhada a pixels inteiros e os cenários mantêm a proporção original para evitar desfoque. O cache do PWA também foi versionado para forçar a atualização dos arquivos.
+
+
+## Atualização v6
+- Sprites de corrida substituídos por 12 novos quadros individuais enviados pela usuária.
+- Caminhada atualizada para 5 quadros.
+- Pulo atualizado para 6 quadros: preparação, impulso/subida, ápice, descida e aterrissagem.
+- Fundo preto das imagens-fonte convertido em transparência para integração nos cenários.
+- Cache do PWA atualizado para forçar o carregamento dos novos sprites.
+
+
+## Vídeo de encerramento
+Ao concluir a 5ª fase e abrir o resultado final, o jogo reproduz o vídeo de encerramento em `assets/video/video_final.mp4`, com controles e suporte a reprodução em celular. O arquivo também é incluído no cache offline do PWA.

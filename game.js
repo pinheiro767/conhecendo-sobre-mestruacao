@@ -246,8 +246,8 @@ function physics(){
 
 function animateSprite(now){
   const im=$('#playerImg');if(document.body.classList.contains('reduced-motion')){im.src=sprite('idle_0.png');return}
-  if(st.y>8||st.vy!==0){const frame=Math.max(0,Math.min(5,Math.floor((16-Math.abs(st.vy))*6/16)));im.src=sprite(`jump_${frame}.png`);return}
-  if(st.moving&&now-st.lastFrame>(st.assist?145:90)){st.frame=(st.frame+1)%(st.assist?4:6);st.lastFrame=now;if(st.assist)im.src=sprite(`walk_${st.frame}.png`);else{const set=st.phase%2===0?'runA':'runB';im.src=sprite(`${set}_${st.frame}.png`)}}else if(!st.moving)im.src=sprite('idle_0.png')
+  if(st.y>8||st.vy!==0){let frame=0;if(st.vy>12)frame=0;else if(st.vy>7)frame=1;else if(st.vy>2)frame=2;else if(st.vy>-3)frame=3;else if(st.vy>-8)frame=4;else frame=5;im.src=sprite(`jump_${frame}.png`);return}
+  if(st.moving&&now-st.lastFrame>(st.assist?145:90)){st.frame=(st.frame+1)%(st.assist?5:6);st.lastFrame=now;if(st.assist)im.src=sprite(`walk_${st.frame}.png`);else{const set=st.phase%2===0?'runA':'runB';im.src=sprite(`${set}_${st.frame}.png`)}}else if(!st.moving)im.src=sprite('idle_0.png')
 }
 
 function checkQuestionGates(){
@@ -262,7 +262,14 @@ function showPhaseComplete(){
   if(st.phaseEnded)return;st.phaseEnded=true;keys.left=keys.right=false;sfx('gate');if(!st.completed.includes(st.phase))st.completed.push(st.phase);st.unlocked=Math.max(st.unlocked,Math.min(phases.length-1,st.phase+1));const p=phases[st.phase];$('#phaseModalTitle').textContent=`✨ ${p.name} concluída!`;$('#phaseRewardImg').src=p.reward.src;$('#phaseRewardName').textContent=p.reward.name;$('#phaseRewardText').textContent=p.reward.text;$('#phaseSummary').textContent=`Placar: ${st.score} pontos · ${st.stars} estrelas · ${st.coins} moedas · ${st.lives} corações.`;$('#nextPhaseBtn').textContent=st.phase===phases.length-1?'Ver resultado 🏆':'Próxima fase ▶';$('#phaseModal').classList.remove('hidden');saveProgress();renderMap()
 }
 $('#nextPhaseBtn').onclick=()=>{$('#phaseModal').classList.add('hidden');if(st.phase===phases.length-1)showVictory();else{st.phase++;loadPhase(st.phase,true)}};
-function showVictory(){musicStop();sfx('victory');$('#finalSummary').textContent=`Resultado final: ${st.score} pontos de conhecimento · ${st.stars} estrelas · ${st.coins} moedas. As 18 perguntas foram percorridas ao longo das 5 fases.`;$('#victoryModal').classList.remove('hidden');saveProgress()}
+function showVictory(){
+  musicStop();sfx('victory');
+  $('#finalSummary').textContent=`Resultado final: ${st.score} pontos de conhecimento · ${st.stars} estrelas · ${st.coins} moedas. As 18 perguntas foram percorridas ao longo das 5 fases.`;
+  $('#victoryModal').classList.remove('hidden');
+  const video=$('#finalVideo');
+  if(video){video.currentTime=0;video.volume=.9;const play=video.play();if(play&&play.catch)play.catch(()=>{});}
+  saveProgress()
+}
 
 function camera(){const vw=window.innerWidth;const cam=Math.round(Math.max(0,Math.min(WORLD_W-vw,st.x-vw*.34)));$('#world').style.transform=`translate3d(${-cam}px,0,0)`}
 function loop(now){
@@ -276,7 +283,7 @@ requestAnimationFrame(loop);
 function startGame(){
   $('#startScreen').classList.add('hidden');$('#game').classList.remove('hidden');st.phase=Math.min(st.phase,st.unlocked);loadPhase(st.phase,true);musicStart();setTimeout(()=>$('#rightBtn').focus(),60)
 }
-function goHome(){saveProgress();musicStop();$('#game').classList.add('hidden');$$('.modal').forEach(m=>m.classList.add('hidden'));$('#startScreen').classList.remove('hidden');renderMap()}
+function goHome(){saveProgress();musicStop();const video=$('#finalVideo');if(video){video.pause();video.currentTime=0}$('#game').classList.add('hidden');$$('.modal').forEach(m=>m.classList.add('hidden'));$('#startScreen').classList.remove('hidden');renderMap()}
 function togglePause(force){
   if($('#game').classList.contains('hidden'))return;const next=typeof force==='boolean'?force:!st.paused;st.paused=next;$('#pauseModal').classList.toggle('hidden',!next);$('#pauseBtn').textContent=next?'▶️':'⏸️';keys.left=keys.right=false;saveProgress()
 }
