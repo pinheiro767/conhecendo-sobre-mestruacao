@@ -104,20 +104,30 @@
     </div>
   </div>
 
-  <div id="victoryModal" class="modal hidden" role="dialog" aria-modal="true">
-    <div class="modal-card victory-card">
-      <h2>🏆 Jornada concluída!</h2>
-      <p class="lead">Cris chegou à farmácia reunindo conhecimento, cuidado e autonomia.</p>
-      <img src="assets/images/pharmacy_scene.png" alt="Cris recebendo absorventes na farmácia" class="victory-image">
-      <p id="finalSummary" class="summary-box"></p>
-      <section class="final-video-wrap" aria-label="Vídeo de encerramento">
-        <h3>🎬 Encerramento da jornada</h3>
-        <video id="finalVideo" class="final-video" controls playsinline preload="metadata">
-          <source src="assets/video/video_final.mp4" type="video/mp4">
+  <div id="victoryModal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="victoryTitle">
+    <div class="modal-card victory-card victory-card-video-first">
+      <div class="victory-heading">
+        <span class="phase-badge">FINAL DA JORNADA</span>
+        <h2 id="victoryTitle">🏆 Jornada concluída!</h2>
+        <p class="lead">Cris chegou à farmácia reunindo conhecimento, cuidado e autonomia.</p>
+      </div>
+
+      <section class="final-video-wrap final-video-featured" aria-label="Vídeo de encerramento">
+        <h3>🎬 Assista ao vídeo final</h3>
+        <video id="finalVideo" class="final-video" controls playsinline preload="auto" poster="assets/video/video_poster.jpg">
+          <source src="assets/video/video_final.mp4?v=8" type="video/mp4">
           Seu navegador não conseguiu reproduzir o vídeo final.
         </video>
-        <p class="final-video-caption">Assista ao vídeo de encerramento para concluir a Jornada da Cris.</p>
+        <button id="playFinalVideoBtn" class="primary play-final-video" type="button">▶️ Reproduzir vídeo final</button>
+        <p id="videoStatus" class="final-video-caption" aria-live="polite">O vídeo aparece aqui imediatamente ao concluir a 5ª fase.</p>
       </section>
+
+      <div class="final-reward-row">
+        <img src="assets/items/pad_pack.png" alt="Pacote de absorventes, recompensa final" class="final-reward-img">
+        <div><strong>Kit Dignidade Menstrual</strong><p>Missão concluída: informação, acesso e dignidade caminham juntos.</p></div>
+      </div>
+      <p id="finalSummary" class="summary-box"></p>
+      <img src="assets/images/pharmacy_scene.png" alt="Cris recebendo absorventes na farmácia" class="victory-image victory-image-secondary">
       <div class="menu"><button id="restartBtn" class="primary">🔄 Jogar novamente</button><button id="victoryHomeBtn" class="ghost">🏠 Menu</button></div>
     </div>
   </div>

@@ -52,3 +52,8 @@ Os sprites e itens desta versão foram refeitos diretamente a partir dos PNGs or
 
 ## Vídeo de encerramento
 Ao concluir a 5ª fase e abrir o resultado final, o jogo reproduz o vídeo de encerramento em `assets/video/video_final.mp4`, com controles e suporte a reprodução em celular. O arquivo também é incluído no cache offline do PWA.
+
+## v8 — correção do vídeo final
+- O vídeo de encerramento aparece **imediatamente** após concluir a 5ª fase, sem precisar clicar em “Ver resultado”.
+- O vídeo fica no topo da tela final, com pôster e botão “Reproduzir vídeo final”.
+- Cache do PWA atualizado para evitar que uma versão antiga esconda o vídeo.

@@ -259,16 +259,47 @@ function checkFinish(){
   if(Date.now()-st.finishHintAt>1800){st.finishHintAt=Date.now();const s=phaseStats(),m=phases[st.phase].mission;const miss=[];if(s.stars<m.stars)miss.push(`${m.stars-s.stars} estrela(s)`);if(s.items<m.items)miss.push(`${m.items-s.items} item(ns)`);if(s.questions<m.questions)miss.push(`${m.questions-s.questions} pergunta(s)`);toast('🔒 O portal ainda está fechado. Falta: '+miss.join(', ')+'.',2600);st.x=WORLD_W-430}
 }
 function showPhaseComplete(){
-  if(st.phaseEnded)return;st.phaseEnded=true;keys.left=keys.right=false;sfx('gate');if(!st.completed.includes(st.phase))st.completed.push(st.phase);st.unlocked=Math.max(st.unlocked,Math.min(phases.length-1,st.phase+1));const p=phases[st.phase];$('#phaseModalTitle').textContent=`✨ ${p.name} concluída!`;$('#phaseRewardImg').src=p.reward.src;$('#phaseRewardName').textContent=p.reward.name;$('#phaseRewardText').textContent=p.reward.text;$('#phaseSummary').textContent=`Placar: ${st.score} pontos · ${st.stars} estrelas · ${st.coins} moedas · ${st.lives} corações.`;$('#nextPhaseBtn').textContent=st.phase===phases.length-1?'Ver resultado 🏆':'Próxima fase ▶';$('#phaseModal').classList.remove('hidden');saveProgress();renderMap()
+  if(st.phaseEnded)return;
+  st.phaseEnded=true; keys.left=keys.right=false; sfx('gate');
+  if(!st.completed.includes(st.phase))st.completed.push(st.phase);
+  st.unlocked=Math.max(st.unlocked,Math.min(phases.length-1,st.phase+1));
+  const p=phases[st.phase];
+  saveProgress(); renderMap();
+
+  // Na 5ª fase, o vídeo final aparece imediatamente ao atravessar o portal.
+  if(st.phase===phases.length-1){
+    showVictory();
+    return;
+  }
+
+  $('#phaseModalTitle').textContent=`✨ ${p.name} concluída!`;
+  $('#phaseRewardImg').src=p.reward.src;
+  $('#phaseRewardName').textContent=p.reward.name;
+  $('#phaseRewardText').textContent=p.reward.text;
+  $('#phaseSummary').textContent=`Placar: ${st.score} pontos · ${st.stars} estrelas · ${st.coins} moedas · ${st.lives} corações.`;
+  $('#nextPhaseBtn').textContent='Próxima fase ▶';
+  $('#phaseModal').classList.remove('hidden');
 }
-$('#nextPhaseBtn').onclick=()=>{$('#phaseModal').classList.add('hidden');if(st.phase===phases.length-1)showVictory();else{st.phase++;loadPhase(st.phase,true)}};
+$('#nextPhaseBtn').onclick=()=>{$('#phaseModal').classList.add('hidden');st.phase++;loadPhase(st.phase,true)};
 function showVictory(){
-  musicStop();sfx('victory');
+  musicStop(); sfx('victory');
   $('#finalSummary').textContent=`Resultado final: ${st.score} pontos de conhecimento · ${st.stars} estrelas · ${st.coins} moedas. As 18 perguntas foram percorridas ao longo das 5 fases.`;
+  $('#phaseModal').classList.add('hidden');
   $('#victoryModal').classList.remove('hidden');
+  const card=$('#victoryModal .modal-card'); if(card)card.scrollTop=0;
   const video=$('#finalVideo');
-  if(video){video.currentTime=0;video.volume=.9;const play=video.play();if(play&&play.catch)play.catch(()=>{});}
-  saveProgress()
+  const status=$('#videoStatus');
+  if(video){
+    video.pause(); video.currentTime=0; video.volume=.9; video.muted=false;
+    video.load();
+    // Tentativa automática. Se o navegador bloquear, o pôster e o botão ficam visíveis.
+    const play=video.play();
+    if(play&&play.then){
+      play.then(()=>{if(status)status.textContent='▶️ Vídeo de encerramento em reprodução.'})
+          .catch(()=>{if(status)status.textContent='Toque em “Reproduzir vídeo final” para assistir.'});
+    }
+  }
+  saveProgress();
 }
 
 function camera(){const vw=window.innerWidth;const cam=Math.round(Math.max(0,Math.min(WORLD_W-vw,st.x-vw*.34)));$('#world').style.transform=`translate3d(${-cam}px,0,0)`}
@@ -292,6 +323,7 @@ $('#startBtn').onclick=startGame;
 $('#newGameBtn').onclick=()=>{resetGame();startGame()};
 $('#homeBtn').onclick=goHome;$('#victoryHomeBtn').onclick=()=>{$('#victoryModal').classList.add('hidden');goHome()};
 $('#restartBtn').onclick=()=>{$('#victoryModal').classList.add('hidden');resetGame();$('#startScreen').classList.add('hidden');$('#game').classList.remove('hidden');loadPhase(0,true);musicStart()};
+const playFinalBtn=$('#playFinalVideoBtn');if(playFinalBtn)playFinalBtn.onclick=()=>{const v=$('#finalVideo'),status=$('#videoStatus');if(!v)return;v.muted=false;v.volume=.9;const p=v.play();if(p&&p.then)p.then(()=>{if(status)status.textContent='▶️ Vídeo de encerramento em reprodução.'}).catch(()=>{if(status)status.textContent='Não foi possível iniciar automaticamente. Toque no controle ▶ do próprio vídeo.'})};
 $('#pauseBtn').onclick=()=>togglePause();$('#resumeBtn').onclick=()=>togglePause(false);
 $('#soundBtn').onclick=toggleSound;$('#panelSoundBtn').onclick=toggleSound;
 $('#helpBtn').onclick=()=>$('#helpModal').classList.remove('hidden');$$('.closeHelp').forEach(b=>b.onclick=()=>$('#helpModal').classList.add('hidden'));
